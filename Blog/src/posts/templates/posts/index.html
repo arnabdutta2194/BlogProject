@@ -1,4 +1,15 @@
 <!DOCTYPE html>
 <html>
     <h1>Template is Working Fine</h1>
+    <body>{{title}}
+        <p>{% for obj in objects_list %}
+            {{obj.title}}</br>
+            {{obj.content}}</br>
+            {{obj.updated}}</br>
+            {{obj.timestamp}}</br>
+            {{obj.id}}</br>
+            {% endfor %}
+        </p>
+
+    </body>
 </html>
