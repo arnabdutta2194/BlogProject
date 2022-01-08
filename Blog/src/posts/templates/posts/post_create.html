@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <h1>Form</h1>
+    <body>
+        <!--- Action : Where to send the Form Next After Submit-->
+        <form method="POST" action="">
+            {% csrf_token %}
+            <table>
+                {{form.as_table}}
+            </table>
+            <input type="submit" value="Submit">
+
+        </form>
+    </body>
+</html>

@@ -21,5 +21,5 @@ from django.urls.conf import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     #--Direct Path - <appname>.views.<function_name>
-    path(r'posts/', include("posts.urls")),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
+    path(r'posts/', include("posts.urls"),name="Posts"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
 ]
