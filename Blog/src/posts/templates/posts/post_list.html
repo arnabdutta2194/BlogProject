@@ -1,0 +1,13 @@
+{% extends "posts/base.html" %}
+{% block content %}
+<h1>{{title}}</h1>
+<p>{% for obj in objects_list %}
+    <!-- <a href = "/posts/{{obj.id}}">{{obj.title}}</a></br> -->
+    <a href = "{% url 'posts:detail' id=obj.id %}">{{obj.title}}</a></br>
+    {{obj.content}}</br>
+    {{obj.updated}}</br>
+    {{obj.timestamp}}</br>
+    {{obj.id}}</br>
+    {% endfor %}
+</p>
+{% endblock content %}

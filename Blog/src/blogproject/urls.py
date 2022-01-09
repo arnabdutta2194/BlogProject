@@ -17,9 +17,15 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     #--Direct Path - <appname>.views.<function_name>
-    path(r'posts/', include("posts.urls"),name="Posts"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
+    path(r'posts/', include("posts.urls"),name="posts"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
 ]
+#--- The blow configuration is done to serve Static File During Development
+#--- It is not a good practice for Production. In production generally files are served from Cloud
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

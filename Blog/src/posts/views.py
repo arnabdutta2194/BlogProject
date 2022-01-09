@@ -1,9 +1,10 @@
 from django.db.models.query_utils import Q
-from django.shortcuts import render,get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import redirect, render,get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post
 from .forms import PostForm
-
+from django.urls import reverse,reverse_lazy
+from django.contrib import messages
 
 # List All Posts View
 def post_list(request):
@@ -28,7 +29,7 @@ def post_list(request):
             "objects_list" : querySet
         }
         
-    return render(request,"posts/index.html",context) 
+    return render(request,"posts/post_list.html",context) 
 
 # Create A Post View
 def post_create(request):
@@ -48,6 +49,10 @@ def post_create(request):
         instance = form.save(commit=False)
         instance.save()
         print(form.cleaned_data.get("title"))
+        messages.success(request,"Post Created Successfully")
+        return HttpResponseRedirect(reverse_lazy("posts:detail",args=[instance.id])) #--- Will Redirect to /posts/list
+    else:
+        messages.error(request,"Post not Created successfully")
     context = {
         "form":form
     }    
@@ -66,9 +71,29 @@ def post_detail(request,id=None):
 
 
 # Update Existing Post
-def post_update(request):
-    return HttpResponse("<h1>Update</h1>")
+def post_update(request,id=None):
+    instance = get_object_or_404(Post,id=id)
+    form = PostForm(request.POST or None,instance=instance) #--instance=instance will show us the filled form with previous data
+    if form.is_valid(): #--Model Form Validations
+        instance = form.save(commit=False)
+        instance.save()
+        print(form.cleaned_data.get("title"))
+        messages.success(request,"Post Updated Successfully")
+        return HttpResponseRedirect(reverse_lazy("posts:detail",args=[id])) #--- Will Redirect to /posts/list
+    else:
+        messages.error(request,"Post not Updated successfully")
+    context = {
+        "title" : instance.title,
+        "instance" : instance,
+        "form":form
+    }    
+    return render(request,"posts/post_create.html",context) 
+
 
 # Delete a Post
-def post_delete(request):
-    return HttpResponse("<h1>Delete</h1>")
+def post_delete(request,id=None):
+    instance = get_object_or_404(Post,id=id)
+    instance.delete()
+    messages.success(request,"Post Deleted Successfully")
+    return redirect("posts:list")
+    

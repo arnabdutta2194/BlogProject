@@ -22,11 +22,11 @@ from . import views
 app_name = "posts" #--Assigning an App Name ensures we can use the same functions in other apps as well
 urlpatterns = [
     #-- URLS only Allows Regular Expressions to be applied and not Paths
-    path(r'', views.post_list),
+    path(r'', views.post_list,name="list"),
     url(r'^create/$', views.post_create),
     # url(r'^detail/(?P<id>\d+)/$', views.post_detail),
     # url(r'^(?P<id>\d+)/$', views.post_detail), #---Only using Key after Post
     url(r'^(?P<id>\d+)/$', views.post_detail,name = "detail"), #---Only using Key after Post]
-    url(r'^update/$', views.post_update),
-    url(r'^delete/$', views.post_delete),
+    url(r'^(?P<id>\d+)/update/$', views.post_update,name="update"),
+    url(r'^(?P<id>\d+)/delete/$', views.post_delete),
 ]

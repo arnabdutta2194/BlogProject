@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -119,6 +120,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#--- Defining a List of Directories where Django will look for Static Files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,"static")
+    # BASE_DIR / "static",
+    # '/var/www/static/',
+]
+
+#--- Emulating Static Files being on different server
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static_cdn")
+#--- Any Files uploaded by user should go in MEDIA_ROOT
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"media_cdn")
+
+#--- python manage.py collectstatic will collect all files from Static Folders to Static Root Directory
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
