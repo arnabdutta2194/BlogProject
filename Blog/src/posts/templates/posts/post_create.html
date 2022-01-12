@@ -1,5 +1,6 @@
 {% extends "posts/base.html" %}
 {% block content %}
+<div class="col-sm-6 col-sm-offset-3">
 <h1>Form</h1>
 <!--- {{block.super}} Will Fetch the Parent Class Content-->
 <!--- Action : Where to send the Form Next After Submit-->
@@ -8,6 +9,7 @@
     <table>
         {{form.as_table}}
     </table>
-    <input type="submit" value="Submit">
+    <input type="submit" class="btn btn-default" value="Create Post">
 </form>
+</div>
 {% endblock content %}

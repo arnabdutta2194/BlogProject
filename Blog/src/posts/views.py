@@ -5,31 +5,40 @@ from .models import Post
 from .forms import PostForm
 from django.urls import reverse,reverse_lazy
 from django.contrib import messages
+from django.core.paginator import Paginator
+
 
 # List All Posts View
 def post_list(request):
     # return HttpResponse("<h1>List</h1>")
     #--Rendering a Template : Parameters : Request -- Template Path -- Context
     #-- Context is passed as a dictionary to HTML
-    querySet = Post.objects.all()
+    posts_list = Post.objects.all().order_by("-timestamp")
     
     # instance = Post.objects.get(id=6) #-- This will throw error is ID is not found
     #-- Django provides a better way to handle this using get_object_or_404
     # instance = get_object_or_404(Post,id=1)
     # instance = get_object_or_404(Post,title = "FB Post")
-
+    paginator = Paginator(posts_list, 5) # Show 10 Posts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     if request.user.is_authenticated:
         context = {
-            "title" : "User Is Authenticated",
-            "objects_list" : querySet
+            "title" : "All Posts",
+            "objects_list" : posts_list,
+            'page_obj': page_obj
         }
     else:
         context = {
-            "title" : "User Is Not Authenticated",
-            "objects_list" : querySet
+            "title" : "All Posts",
+            "objects_list" : posts_list,
+            'page_obj': page_obj
         }
         
     return render(request,"posts/post_list.html",context) 
+
+
+
 
 # Create A Post View
 def post_create(request):
