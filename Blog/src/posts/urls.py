@@ -26,7 +26,9 @@ urlpatterns = [
     url(r'^create/$', views.post_create),
     # url(r'^detail/(?P<id>\d+)/$', views.post_detail),
     # url(r'^(?P<id>\d+)/$', views.post_detail), #---Only using Key after Post
-    url(r'^(?P<id>\d+)/$', views.post_detail,name = "detail"), #---Only using Key after Post]
+    # url(r'^(?P<id>\d+)/$', views.post_detail,name = "detail"), #---Only using Key after Post
+    url(r'^(?P<slug>[\w-]+)/$', views.post_detail, name='detail'), #---Url Modified to accept Slugs
+    # path('<str:slug>/$', views.post_detail,name = "detail"),
     url(r'^(?P<id>\d+)/update/$', views.post_update,name="update"),
     url(r'^(?P<id>\d+)/delete/$', views.post_delete),
 ]

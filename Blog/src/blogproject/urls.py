@@ -29,3 +29,4 @@ urlpatterns = [
 #--- It is not a good practice for Production. In production generally files are served from Cloud
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

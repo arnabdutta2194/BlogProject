@@ -132,7 +132,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR),"static_cdn")
 #--- Any Files uploaded by user should go in MEDIA_ROOT
 MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR),"media_cdn")
-
+MEDIA_URL = "/media/" #-- If we open any media , it should open at /media
 #--- python manage.py collectstatic will collect all files from Static Folders to Static Root Directory
 
 # Default primary key field type

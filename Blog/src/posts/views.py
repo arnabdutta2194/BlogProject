@@ -53,7 +53,7 @@ def post_create(request):
     #     Post.objects.create(title=title,content=content)
     
     #--- Best Practice when Using Model Forms
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid(): #--Model Form Validations
         instance = form.save(commit=False)
         instance.save()
@@ -69,9 +69,9 @@ def post_create(request):
 
 
 # Check Post Detail
-def post_detail(request,id=None):
+def post_detail(request,slug=None):
     # instance = get_object_or_404(Post,title = "FB Post")
-    instance = get_object_or_404(Post,id=id)
+    instance = get_object_or_404(Post,slug=slug)
     context = {
         "title" : instance.title,
         "instance" : instance,
@@ -82,7 +82,8 @@ def post_detail(request,id=None):
 # Update Existing Post
 def post_update(request,id=None):
     instance = get_object_or_404(Post,id=id)
-    form = PostForm(request.POST or None,instance=instance) #--instance=instance will show us the filled form with previous data
+    #-- request.FILES asks for Files Data from Request
+    form = PostForm(request.POST or None,request.FILES or None,instance=instance) #--instance=instance will show us the filled form with previous data
     if form.is_valid(): #--Model Form Validations
         instance = form.save(commit=False)
         instance.save()

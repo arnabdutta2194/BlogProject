@@ -1,4 +1,5 @@
 {% extends "posts/base.html" %}
+{% load static %}
 {% block content %}
 <div class="col-sm-6 col-sm-offset-3">
 <h1>{{title}}</h1>
@@ -6,12 +7,16 @@
     {% for obj in page_obj %}
         <div class="col-sm-12">
             <div class="thumbnail">
+                {% if obj.image %}
+                <img src="{{ obj.image.url }}" class="img-responsive"> 
+                {% endif %}
                 <div class="caption">
                     <!-- <img src="..." alt="..."> -->
                     <!-- <a href = "/posts/{{obj.id}}">{{obj.title}}</a></br> -->
-                    <h3><a href = "{% url 'posts:detail' id=obj.id %}">{{obj.title}}</a> <small> {{obj.timestamp|timesince}}</small></h3>
+                    <!-- <h3><a href = "{% url 'posts:detail' slug=obj.slug %}">{{obj.title}}</a> <small> {{obj.timestamp|timesince}}</small></h3> -->
+                    <h3><a href = "{{ obj.get_absolute_url }}">{{obj.title}}</a> <small> {{obj.timestamp|timesince}}</small></h3>
                     <p>{{obj.content | linebreaks | truncatechars:40}}</p>
-                    <p><a href="{% url 'posts:detail' id=obj.id %}" class="btn btn-primary" role="button">View</a></p>
+                    <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
                 </div>
             </div>
         </div>
