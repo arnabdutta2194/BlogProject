@@ -3,11 +3,14 @@ from django.db.models.signals import pre_save
 from django.urls import reverse
 #--Take Some Action Right Before Model is getting saved
 from django.utils.text import slugify
+from django.conf import settings
+
 #--Upload images to a specific location inside Media URL
 def upload_location(instance,filename):
     return f"{instance.id}/{filename}"
 # Create your models here.
 class Post(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,default=1,on_delete=models.CASCADE) #---Creating a relationship between Post and User # default=1 means superuser
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to=upload_location,null=True,blank=True,width_field="width_field",height_field="height_field") #---Need Pillow Library to Use This Field
@@ -32,7 +35,7 @@ def create_slug(instance,new_slug=None):
     qs = Post.objects.filter(slug = slug).order_by("-id")
     exists = qs.exists()
     if exists:
-        new_slug = f"{slug} - {instance.id}"
+        new_slug = f"{slug}-{instance.id}"
         return create_slug(instance,new_slug=new_slug)
     return slug
 

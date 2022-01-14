@@ -12,6 +12,8 @@
         <link rel="stylesheet" href="{static 'css/base.css'}"/> <!-- Reusable incase your Static URL Changes -->
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v12.0" nonce="EcZl7jYs"></script>
         {% include "posts/messages_display.html" %}
         <div class="container">
         {% block content %}
@@ -19,3 +21,6 @@
         </div>
     </body>
 </html>
+
+<!-- To Generate Facebook Like/Share/Comments -->
+<!-- https://developers.facebook.com/docs/plugins/like-button -->

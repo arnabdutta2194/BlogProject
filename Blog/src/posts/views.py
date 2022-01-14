@@ -61,9 +61,10 @@ def post_create(request):
     if form.is_valid(): #--Model Form Validations
         instance = form.save(commit=False)
         instance.save()
+        instance.user = request.user
         print(form.cleaned_data.get("title"))
         messages.success(request,"Post Created Successfully")
-        return HttpResponseRedirect(reverse_lazy("posts:detail",args=[instance.id])) #--- Will Redirect to /posts/list
+        return HttpResponseRedirect(reverse_lazy("posts:detail",args=[instance.slug])) #--- Will Redirect to /posts/list
     else:
         messages.error(request,"Post not Created successfully")
     context = {
@@ -96,10 +97,11 @@ def post_update(request,id=None):
     form = PostForm(request.POST or None,request.FILES or None,instance=instance) #--instance=instance will show us the filled form with previous data
     if form.is_valid(): #--Model Form Validations
         instance = form.save(commit=False)
+        instance.user = request.user
         instance.save()
         print(form.cleaned_data.get("title"))
         messages.success(request,"Post Updated Successfully")
-        return HttpResponseRedirect(reverse_lazy("posts:detail",args=[id])) #--- Will Redirect to /posts/list
+        return HttpResponseRedirect(reverse_lazy("posts:detail",args=[instance.slug])) #--- Will Redirect to /posts/list
     else:
         messages.error(request,"Post not Updated successfully")
     context = {
