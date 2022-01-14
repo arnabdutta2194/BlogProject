@@ -1,4 +1,5 @@
 from django.db.models.query_utils import Q
+from django.http.response import Http404
 from django.shortcuts import redirect, render,get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Post
@@ -6,6 +7,7 @@ from .forms import PostForm
 from django.urls import reverse,reverse_lazy
 from django.contrib import messages
 from django.core.paginator import Paginator
+from urllib.parse import quote_plus
 
 
 # List All Posts View
@@ -53,6 +55,8 @@ def post_create(request):
     #     Post.objects.create(title=title,content=content)
     
     #--- Best Practice when Using Model Forms
+    if not request.user.is_staff or not request.user.is_superuser:
+        raise Http404
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid(): #--Model Form Validations
         instance = form.save(commit=False)
@@ -70,17 +74,23 @@ def post_create(request):
 
 # Check Post Detail
 def post_detail(request,slug=None):
+    if not request.user.is_staff or not request.user.is_superuser:
+        raise Http404
     # instance = get_object_or_404(Post,title = "FB Post")
     instance = get_object_or_404(Post,slug=slug)
+    share_string = quote_plus(instance.content) #--Encoding Content for Social Share Links
     context = {
         "title" : instance.title,
         "instance" : instance,
+        "share_string" : share_string #--Encoded text for Social Shareable Links
     }
     return render(request,"posts/post_detail.html",context) 
 
 
 # Update Existing Post
 def post_update(request,id=None):
+    if not request.user.is_staff or not request.user.is_superuser:
+        raise Http404
     instance = get_object_or_404(Post,id=id)
     #-- request.FILES asks for Files Data from Request
     form = PostForm(request.POST or None,request.FILES or None,instance=instance) #--instance=instance will show us the filled form with previous data
