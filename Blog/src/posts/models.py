@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.conf import settings
 from django.utils import timezone
+from markdown_deux import markdown
+from django.utils.safestring import mark_safe
 
 
 #Model Manager Examples :
@@ -21,7 +23,8 @@ class PostManager(models.Manager):
 #--Upload images to a specific location inside Media URL
 def upload_location(instance,filename):
     print("Instance :: " ,instance)
-    return f"{instance.id}/{filename}"
+    return f"images/{filename}"
+    
 # Create your models here.
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,default=1,on_delete=models.CASCADE) #---Creating a relationship between Post and User # default=1 means superuser
@@ -43,6 +46,9 @@ class Post(models.Model):
     
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"slug":self.slug})
+    
+    def get_markdown(self): #--This method will return markdown/truncated content to display in the post list
+        return mark_safe(markdown(self.content))
 
 
 

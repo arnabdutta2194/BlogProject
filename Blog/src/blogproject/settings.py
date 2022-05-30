@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'posts'
+    'markdown_deux',
+    'pagedown', #--Third Party Library
+    'posts',
 ]
 
 MIDDLEWARE = [
