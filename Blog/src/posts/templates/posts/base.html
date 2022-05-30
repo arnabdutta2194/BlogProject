@@ -9,7 +9,7 @@
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <title>{% block head_title %} Django Blog Project {% endblock head_title %}</title>
-        <link rel="stylesheet" href="{static 'css/base.css'}"/> <!-- Reusable incase your Static URL Changes -->
+        <link rel="stylesheet" href="{% static 'css/base.css' %}"/> <!-- Reusable incase your Static URL Changes -->
     </head>
     <body>
         <div id="fb-root"></div>

@@ -1,12 +1,26 @@
+from pyexpat import model
+import re
 from django.db import models
 from django.db.models.signals import pre_save
 from django.urls import reverse
 #--Take Some Action Right Before Model is getting saved
 from django.utils.text import slugify
 from django.conf import settings
+from django.utils import timezone
+
+
+#Model Manager Examples :
+# Post.objects.all() , Post.create(user=user,title=title,......)
+
+#--We can override the ModelManagers with our custom function
+#--Overriding the Default all
+class PostManager(models.Manager):
+    def active(self,*args,**kwargs):
+        return super(PostManager,self).filter(draft=False).filter(publish__lte=timezone.now())
 
 #--Upload images to a specific location inside Media URL
 def upload_location(instance,filename):
+    print("Instance :: " ,instance)
     return f"{instance.id}/{filename}"
 # Create your models here.
 class Post(models.Model):
@@ -17,8 +31,12 @@ class Post(models.Model):
     height_field = models.IntegerField(default=0) #--Autodetermines Height of Image
     width_field = models.IntegerField(default=0) #--Autodetermines Width of Image
     content = models.TextField()
+    draft = models.BooleanField(default=False) #--For Drafts
+    publish = models.DateTimeField(default = None,auto_now=False,auto_now_add=False)  #--For Drafts
     updated = models.DateTimeField(auto_now=True,auto_now_add=False) 
     timestamp = models.DateTimeField(auto_now=False,auto_now_add=True) 
+
+    objects = PostManager()
 
     def __str__(self) -> str:
         return self.title
