@@ -8,33 +8,48 @@ from django.urls import reverse,reverse_lazy
 from django.contrib import messages
 from django.core.paginator import Paginator
 from urllib.parse import quote_plus
+from django.utils import timezone
+from django.db.models import Q
 
 
 # List All Posts View
 def post_list(request):
+    today = timezone.now().date()
     # return HttpResponse("<h1>List</h1>")
     #--Rendering a Template : Parameters : Request -- Template Path -- Context
     #-- Context is passed as a dictionary to HTML
-    posts_list = Post.objects.all().order_by("-timestamp")
-    
+    posts_list = Post.objects.active().order_by("-timestamp") #--Ignoring Draft and Future Pots
+    if request.user.is_staff or request.user.is_superuser:   #--Showing Draft and Future Pots to Staffs and Superusers
+        posts_list = Post.objects.all().order_by("-timestamp")
+    query = request.GET.get("q")
+    if query:
+        posts_list = posts_list.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
+            ).distinct()
     # instance = Post.objects.get(id=6) #-- This will throw error is ID is not found
     #-- Django provides a better way to handle this using get_object_or_404
     # instance = get_object_or_404(Post,id=1)
     # instance = get_object_or_404(Post,title = "FB Post")
-    paginator = Paginator(posts_list, 5) # Show 10 Posts per page.
+    paginator = Paginator(posts_list, 1) # Show 10 Posts per page.
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     if request.user.is_authenticated:
         context = {
             "title" : "All Posts",
             "objects_list" : posts_list,
-            'page_obj': page_obj
+            'page_obj': page_obj,
+            "today" : today,
         }
     else:
         context = {
             "title" : "All Posts",
             "objects_list" : posts_list,
-            'page_obj': page_obj
+            'page_obj': page_obj,
+            "today" : today,
+
         }
         
     return render(request,"posts/post_list.html",context) 
@@ -89,10 +104,11 @@ def post_detail(request,slug=None):
 
 
 # Update Existing Post
-def post_update(request,id=None):
-    if not request.user.is_staff or not request.user.is_superuser:
-        raise Http404
-    instance = get_object_or_404(Post,id=id)
+def post_update(request,slug=None):
+    instance = get_object_or_404(Post,slug=slug)
+    if instance.draft or instance.publish > timezone.now():
+        if not request.user.is_staff or not request.user.is_superuser:
+            raise Http404
     #-- request.FILES asks for Files Data from Request
     form = PostForm(request.POST or None,request.FILES or None,instance=instance) #--instance=instance will show us the filled form with previous data
     if form.is_valid(): #--Model Form Validations
@@ -113,8 +129,8 @@ def post_update(request,id=None):
 
 
 # Delete a Post
-def post_delete(request,id=None):
-    instance = get_object_or_404(Post,id=id)
+def post_delete(request,slug=None):
+    instance = get_object_or_404(Post,slug=slug)
     instance.delete()
     messages.success(request,"Post Deleted Successfully")
     return redirect("posts:list")
