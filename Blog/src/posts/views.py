@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from urllib.parse import quote_plus
 from django.utils import timezone
+from django.db.models import Q
 
 
 # List All Posts View
@@ -20,12 +21,19 @@ def post_list(request):
     posts_list = Post.objects.active().order_by("-timestamp") #--Ignoring Draft and Future Pots
     if request.user.is_staff or request.user.is_superuser:   #--Showing Draft and Future Pots to Staffs and Superusers
         posts_list = Post.objects.all().order_by("-timestamp")
-    
+    query = request.GET.get("q")
+    if query:
+        posts_list = posts_list.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
+            ).distinct()
     # instance = Post.objects.get(id=6) #-- This will throw error is ID is not found
     #-- Django provides a better way to handle this using get_object_or_404
     # instance = get_object_or_404(Post,id=1)
     # instance = get_object_or_404(Post,title = "FB Post")
-    paginator = Paginator(posts_list, 5) # Show 10 Posts per page.
+    paginator = Paginator(posts_list, 1) # Show 10 Posts per page.
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     if request.user.is_authenticated:
