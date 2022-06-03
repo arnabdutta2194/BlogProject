@@ -33,7 +33,7 @@ def post_list(request):
     #-- Django provides a better way to handle this using get_object_or_404
     # instance = get_object_or_404(Post,id=1)
     # instance = get_object_or_404(Post,title = "FB Post")
-    paginator = Paginator(posts_list, 1) # Show 10 Posts per page.
+    paginator = Paginator(posts_list, 3) # Show 10 Posts per page.
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     if request.user.is_authenticated:
