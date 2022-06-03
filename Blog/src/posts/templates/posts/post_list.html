@@ -4,8 +4,12 @@
 <div class="col-sm-6 col-sm-offset-3">
 <h1>{{title}}</h1>
 <form method="GET" action="">
-    <input type="text" name = "q" placeholder="Search Posts" value="{{ request.GET.q}}"/>
-    <input type="submit" value="Search">
+    <div class="input-group">
+        <input class="form-control" type="text" name = "q" placeholder="Search Posts" value="{{ request.GET.q}}"/>
+        <span class="input-group-btn">
+        <input class="btn btn-default" type="submit" value="Search">
+        </span>
+    </div>
 </form>
     {% for obj in page_obj %}
     <div class="row">
@@ -20,7 +24,7 @@
                     <!-- <h3><a href = "{% url 'posts:detail' slug=obj.slug %}">{{obj.title}}</a> <small> {{obj.timestamp|timesince}}</small></h3> -->
                     {% if obj.draft %} <h3 style="color:red"> Draft {% if obj.publish > today %} Future Post {% endif %}</h3> {% endif %}
                     <h3><a href = "{{ obj.get_absolute_url }}">{{obj.title}}</a> <small> {{obj.publish |timesince}}</small></h3>
-                    <p>{{obj.content | linebreaks | truncatechars:40}}</p>
+                    <p class="content-markdown">{{obj.content}}</p>
                     <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
                     <p>{% if obj.user.get_full_name %}
                         <p> Author : {{obj.user.get_full_name}} </p>

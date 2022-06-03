@@ -8,8 +8,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <!--Jquery Library-->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+        <!--Marked Library--> <!--For Rendering MarkDown Components-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
         <title>{% block head_title %} Django Blog Project {% endblock head_title %}</title>
         <link rel="stylesheet" href="{% static 'css/base.css' %}"/> <!-- Reusable incase your Static URL Changes -->
+    {% block head_extra %} {% endblock head_extra %}
     </head>
     <body>
         <div id="fb-root"></div>
@@ -19,6 +24,48 @@
         {% block content %}
         {% endblock content %}
         </div>
+        <!--For Rendering Markdown Components-->
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(".content-markdown").each(function(){
+                var content =  $(this).text()
+                console.log(content)
+                var markedContent = marked(content)
+                console.log(markedContent)
+                $(this).html(markedContent)
+                })
+                
+                $(".content-markdown img").each(function(){
+                 $(this).addClass("img-responsive")
+                })
+                
+                var titleInput = $("#id_title");
+                function setTitle(value){
+                    $("#preview-title").text(value)
+                }
+                setTitle(titleInput.val())
+                titleInput.keyup(function(){
+                    var newTitle = $(this).val()
+                    setTitle(newTitle)
+                })
+
+                var contentInput = $("#wmd-input-id_content");
+                function setContent(value){
+                    var markedContent = marked(value)
+                    $("#preview-content").html(markedContent)
+                    $("#preview-content img").each(function(){
+                        $(this).addClass("img-responsive")
+                    })
+                }
+                setContent(contentInput.val())
+                contentInput.keyup(function(){
+                    var newContent = $(this).val()
+                    setContent(newContent)
+                })
+
+
+            })
+        </script>
     </body>
 </html>
 

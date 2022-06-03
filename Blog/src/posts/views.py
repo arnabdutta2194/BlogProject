@@ -10,6 +10,8 @@ from django.core.paginator import Paginator
 from urllib.parse import quote_plus
 from django.utils import timezone
 from django.db.models import Q
+from comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 
 
 # List All Posts View
@@ -33,7 +35,7 @@ def post_list(request):
     #-- Django provides a better way to handle this using get_object_or_404
     # instance = get_object_or_404(Post,id=1)
     # instance = get_object_or_404(Post,title = "FB Post")
-    paginator = Paginator(posts_list, 1) # Show 10 Posts per page.
+    paginator = Paginator(posts_list, 3) # Show 10 Posts per page.
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     if request.user.is_authenticated:
@@ -95,10 +97,17 @@ def post_detail(request,slug=None):
     # instance = get_object_or_404(Post,title = "FB Post")
     instance = get_object_or_404(Post,slug=slug)
     share_string = quote_plus(instance.content) #--Encoding Content for Social Share Links
+    #--Fetching Comments made for Specific Model
+    content_type = ContentType.objects.get_for_model(Post)
+    obj_id = instance.id
+    print(obj_id)
+    comments = Comment.objects.filter(content_type=content_type,object_id = obj_id)
+    print(comments)
     context = {
         "title" : instance.title,
         "instance" : instance,
-        "share_string" : share_string #--Encoded text for Social Shareable Links
+        "share_string" : share_string, #--Encoded text for Social Shareable Links
+        "comments" : comments,
     }
     return render(request,"posts/post_detail.html",context) 
 
