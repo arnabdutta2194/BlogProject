@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'markdown_deux',
     'pagedown', #--Third Party Library
     'posts',
+    'comments',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
