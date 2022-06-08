@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db.models.query_utils import Q
 from django.http.response import Http404
 from django.shortcuts import redirect, render,get_object_or_404
@@ -11,8 +12,8 @@ from urllib.parse import quote_plus
 from django.utils import timezone
 from django.db.models import Q
 from comments.models import Comment
+from comments.forms import CommentForm
 from django.contrib.contenttypes.models import ContentType
-
 
 # List All Posts View
 def post_list(request):
@@ -97,17 +98,43 @@ def post_detail(request,slug=None):
     # instance = get_object_or_404(Post,title = "FB Post")
     instance = get_object_or_404(Post,slug=slug)
     share_string = quote_plus(instance.content) #--Encoding Content for Social Share Links
+
+    #---Comment Form
+    initial_data = {
+        "content_type" : instance.get_content_type.model,
+        "object_id" :  instance.id
+    }
+    print(initial_data)
+    form = CommentForm(request.POST or None, initial=initial_data)
+    if form.is_valid():
+        print(form.cleaned_data)
+        # c_type = form.cleaned_data.get("content_type") 
+        # print(c_type)
+        content_type = ContentType.objects.get_for_model(instance)
+        print(content_type)
+        obj_id = form.cleaned_data.get("object_id")
+
+        content_data = form.cleaned_data.get("content")
+        new_comment, created = Comment.objects.get_or_create(
+            user = request.user,
+            content_type= content_type,
+            object_id = obj_id,
+            content = content_data
+        )
+
+        if created:
+            messages.success(request,"Comment Successfully Created")
+
+
     #--Fetching Comments made for Specific Model
-    content_type = ContentType.objects.get_for_model(Post)
-    obj_id = instance.id
-    print(obj_id)
-    comments = Comment.objects.filter(content_type=content_type,object_id = obj_id)
+    comments = instance.comments #---As it is now a Property
     print(comments)
     context = {
         "title" : instance.title,
         "instance" : instance,
         "share_string" : share_string, #--Encoded text for Social Shareable Links
         "comments" : comments,
+        "comment_form" : form,
     }
     return render(request,"posts/post_detail.html",context) 
 
