@@ -9,6 +9,7 @@ from django.conf import settings
 from django.utils import timezone
 from markdown_deux import markdown
 from django.utils.safestring import mark_safe
+from comments.models import Comment
 
 
 #Model Manager Examples :
@@ -50,6 +51,12 @@ class Post(models.Model):
     def get_markdown(self): #--This method will return markdown/truncated content to display in the post list
         return mark_safe(markdown(self.content))
 
+    #-- This Property of the instance can be used anywhere
+    @property
+    def comments(self):
+        instance = self
+        qs = Comment.objects.filter_by_instance(instance)
+        return qs
 
 
 def create_slug(instance,new_slug=None):

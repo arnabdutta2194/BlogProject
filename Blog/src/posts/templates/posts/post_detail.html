@@ -22,16 +22,14 @@
         <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
         <div class=" content-markdown"> {{instance.content }}</br> </div>
-        
         <div>
                 <p class="lead">Comments</p>
+                <hr/>
                 {% for comment in comments %}
-                <div class=''>
-                        {{comment.content}}
-                        <br/>
-                        via {{ comment.user }} on {{comment.timestamp }}
-                        <br/>
-                </div>
+                <blockquote>
+                        <p>{{comment.content}}</p>
+                        <footer>via {{ comment.user }} on {{comment.timestamp }}</footer>
+                </blockquote>
                 {% endfor %}
         </div>
 
