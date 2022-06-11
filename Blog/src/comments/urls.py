@@ -17,11 +17,11 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
-from .views import comment_thread
+from .views import comment_thread,comment_delete
 
 app_name = "comments" #--Assigning an App Name ensures we can use the same functions in other apps as well
 urlpatterns = [
     #-- URLS only Allows Regular Expressions to be applied and not Paths
     url(r'^(?P<com_id>\d+)/$', comment_thread, name='comment_thread'), #---Url Modified to accept Slugs
-    # url(r'^(?P<slug>[\w-]+)/delete/$', comment_delete),
+    url(r'^(?P<com_id>\d+)/delete/$', comment_delete,name='comment_delete'),
 ]

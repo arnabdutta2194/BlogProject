@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load urlfy %} <!-- Loading Custom Template -->
+{% block head_title %} {{instance.title}} | {{block.super}}{% endblock head_title %}
+{% block content %}
+{{ object }}
+<div class="col-sm-8 col-sm-offset-2">
+
+    <form method="POST" action="."> {% csrf_token %}
+            <p> Are you sure you want to delete : "{{ object.content }}" ?</p> 
+            <input type="submit" value="Confirm" class="btn btn-warning">
+            <a href='{{ object.get_absolute_url }}' class="btn btn-default">Cancel</a>
+    </form>
+
+</div>
+{% endblock content %}
