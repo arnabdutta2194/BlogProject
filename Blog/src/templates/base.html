@@ -3,15 +3,13 @@
 <html>
     <head>
         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <!-- Latest compiled JavaScript -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <!--Jquery Library-->
-        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
-        <!--Marked Library--> <!--For Rendering MarkDown Components-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css' >
+
         <title>{% block head_title %} Django Blog Project {% endblock head_title %}</title>
         <link rel="stylesheet" href="{% static 'css/base.css' %}"/> <!-- Reusable incase your Static URL Changes -->
     {% block head_extra %} {% endblock head_extra %}
@@ -19,12 +17,19 @@
     <body>
         <div id="fb-root"></div>
         <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v12.0" nonce="EcZl7jYs"></script>
-        {% include "posts/messages_display.html" %}
+        {% include "messages_display.html" %}
         <div class="container">
         {% block content %}
         {% endblock content %}
         </div>
         <!--For Rendering Markdown Components-->
+        <!-- Latest compiled and minified JavaScript -->
+        <script   src="http://code.jquery.com/jquery-1.12.2.min.js"   integrity="sha256-lZFHibXzMHo3GGeehn1hudTAP3Sc0uKXBXAzHX1sjtk="   crossorigin="anonymous"></script>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js'></script>
+
         <script type="text/javascript">
             $(document).ready(function(){
                 $(".content-markdown").each(function(){
@@ -33,6 +38,12 @@
                 var markedContent = marked(content)
                 console.log(markedContent)
                 $(this).html(markedContent)
+                })
+
+                console.log("Here")
+                $(".comment-reply-btn").click(function(event){
+                    event.preventDefault();
+                    $(this).parent().next(".comment-reply").fadeToggle();
                 })
                 
                 $(".content-markdown img").each(function(){
@@ -62,7 +73,7 @@
                     var newContent = $(this).val()
                     setContent(newContent)
                 })
-
+                
 
             })
         </script>

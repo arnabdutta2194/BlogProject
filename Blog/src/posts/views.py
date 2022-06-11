@@ -55,7 +55,7 @@ def post_list(request):
 
         }
         
-    return render(request,"posts/post_list.html",context) 
+    return render(request,"post_list.html",context) 
 
 
 
@@ -88,7 +88,7 @@ def post_create(request):
     context = {
         "form":form
     }    
-    return render(request,"posts/post_create.html",context) 
+    return render(request,"post_create.html",context) 
 
 
 # Check Post Detail
@@ -113,17 +113,31 @@ def post_detail(request,slug=None):
         content_type = ContentType.objects.get_for_model(instance)
         print(content_type)
         obj_id = form.cleaned_data.get("object_id")
-
         content_data = form.cleaned_data.get("content")
+        parent_obj = None
+        try:
+            parent_id = int(request.POST.get("parent_id")) #--- To get the Parent Comment ID from Request
+        except: 
+            parent_id = None
+        if parent_id:
+            parent_qs = Comment.objects.filter(id = parent_id)
+            if parent_qs.exists() and parent_qs.count() == 1:
+                parent_obj  = parent_qs.first()
+        print("parent_id",parent_id)
+        print("parent_obj",parent_obj)
         new_comment, created = Comment.objects.get_or_create(
             user = request.user,
             content_type= content_type,
             object_id = obj_id,
-            content = content_data
+            content = content_data,
+            parent = parent_obj
         )
 
         if created:
             messages.success(request,"Comment Successfully Created")
+        print("Content Object")
+        print(new_comment.content_object)
+        return HttpResponseRedirect(new_comment.content_object.get_absolute_url())
 
 
     #--Fetching Comments made for Specific Model
@@ -136,7 +150,7 @@ def post_detail(request,slug=None):
         "comments" : comments,
         "comment_form" : form,
     }
-    return render(request,"posts/post_detail.html",context) 
+    return render(request,"post_detail.html",context) 
 
 
 # Update Existing Post
@@ -161,7 +175,7 @@ def post_update(request,slug=None):
         "instance" : instance,
         "form":form
     }    
-    return render(request,"posts/post_create.html",context) 
+    return render(request,"post_create.html",context) 
 
 
 # Delete a Post
