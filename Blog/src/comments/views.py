@@ -1,13 +1,46 @@
+from multiprocessing import context
+from urllib import response
 from django.shortcuts import render,get_object_or_404
 from .forms import CommentForm
 from .models import Comment
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 
+
 # Create your views here.
+
+def comment_delete(request,com_id):
+    # obj = get_object_or_404(Comment,id=com_id)
+    try:
+        obj = Comment.objects.get(id=com_id)
+    except:
+        raise Http404
+    if obj.user != request.user:
+        # messages.warning(request,"You do not have permission to view this")
+        response_delete = HttpResponse("You do not have permission to delete this")
+        response_delete.status_code = 403
+        return response_delete
+    
+    if request.method == "POST":
+        parent_obj_url = obj.content_object.get_absolute_url() #-- Absolute URL of Parent Post
+        obj.delete()
+        messages.success(request,"Comment has been deleted")
+        return HttpResponseRedirect(parent_obj_url)
+    context = { "object" : obj}
+    return render(request,"confirm_delete.html",context)
+
 def comment_thread(request,com_id):
-    obj = get_object_or_404(Comment, id=com_id)
+    # obj = get_object_or_404(Comment, id=com_id)
+    try:
+        obj = Comment.objects.get(id=com_id)
+    except:
+        raise Http404
+    if obj.user != request.user:
+        messages.warning(request,"You do not have permission to view this")
+        raise Http404
+    if not obj.is_parent : 
+        obj = obj.parent
     content_object = obj.content_object #-- Post That the Comment is on
     # content_id = obj.content_object.id
     initial_data = {

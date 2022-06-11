@@ -11,6 +11,7 @@ from markdown_deux import markdown
 from django.utils.safestring import mark_safe
 from comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
+from .utils import get_read_time
 
 
 
@@ -39,6 +40,7 @@ class Post(models.Model):
     content = models.TextField()
     draft = models.BooleanField(default=False) #--For Drafts
     publish = models.DateTimeField(default = None,auto_now=False,auto_now_add=False)  #--For Drafts
+    read_time = models.TimeField(null=True,blank=True)  #--For Storing ReadTime
     updated = models.DateTimeField(auto_now=True,auto_now_add=False) 
     timestamp = models.DateTimeField(auto_now=False,auto_now_add=True) 
 
@@ -78,10 +80,19 @@ def create_slug(instance,new_slug=None):
         return create_slug(instance,new_slug=new_slug)
     return slug
 
-
+#-- Whatever actions which we need to perform before saving a model needs to be done here
 def pre_save_post_reciever(sender,instance,*args,**kwargs):
     if not instance.slug:
         instance.slug = create_slug(instance)
+
+    #---- Save ReadTime
+
+    if instance.content:
+        html_string = instance.get_markdown()
+        read_time = get_read_time(html_string)
+        instance.read_time = read_time
+    
+
 
 #--- Pre Save will run before everytime a model is getting saved
 pre_save.connect(pre_save_post_reciever,sender = Post)
