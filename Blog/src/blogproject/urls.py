@@ -19,13 +19,17 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf import settings
 from django.conf.urls.static import static
+from accounts.views import (login_view,register_view,logout_view)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     #--Direct Path - <appname>.views.<function_name>
     path(r'posts/', include("posts.urls"),name="posts"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
     path(r'comments/', include("comments.urls"),name="comments"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
-    path(r'', include("posts.urls"),name="posts"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
+    path(r'login/', login_view, name="login"),
+    path(r'logout/', logout_view, name="logout"),
+    path(r'register/', register_view, name="register"),
+    path(r'', include("posts.urls"),name="posts"),  #-- Anythings comes as / - redirect it to urls.py of Posts Application
 ]
 #--- The blow configuration is done to serve Static File During Development
 #--- It is not a good practice for Production. In production generally files are served from Cloud
