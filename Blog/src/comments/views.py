@@ -1,6 +1,7 @@
 from multiprocessing import context
 from urllib import response
 from django.shortcuts import render,get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from .models import Comment
 from django.http import HttpResponseRedirect, Http404, HttpResponse
@@ -9,7 +10,7 @@ from django.contrib import messages
 
 
 # Create your views here.
-
+@login_required #(login_url='/login/') #--- Will Check if user is authenticated or not before deleting
 def comment_delete(request,com_id):
     # obj = get_object_or_404(Comment,id=com_id)
     try:
@@ -50,7 +51,7 @@ def comment_thread(request,com_id):
     print(initial_data)
     form = CommentForm(request.POST or None, initial=initial_data)
 
-    if form.is_valid():
+    if form.is_valid() and request.user.is_authenticated():
         print(form.cleaned_data)
         # c_type = form.cleaned_data.get("content_type") 
         # print(c_type)
