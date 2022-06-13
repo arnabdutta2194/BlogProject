@@ -15,6 +15,7 @@ def comment_delete(request,com_id):
     # obj = get_object_or_404(Comment,id=com_id)
     try:
         obj = Comment.objects.get(id=com_id)
+        print(obj)
     except:
         raise Http404
     if obj.user != request.user:
@@ -51,7 +52,7 @@ def comment_thread(request,com_id):
     print(initial_data)
     form = CommentForm(request.POST or None, initial=initial_data)
 
-    if form.is_valid() and request.user.is_authenticated():
+    if form.is_valid() and request.user.is_authenticated:
         print(form.cleaned_data)
         # c_type = form.cleaned_data.get("content_type") 
         # print(c_type)
