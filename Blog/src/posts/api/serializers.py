@@ -13,7 +13,7 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
 class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id','title','slug','content','publish','read_time']
+        fields = ['id','user','title','slug','content','publish','read_time']
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
