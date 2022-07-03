@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #--Direct Path - <appname>.views.<function_name>
     path(r'posts/', include("posts.urls"),name="posts"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
+    path(r'api/posts/', include("posts.api.urls"),name="posts-api"),  #-- Anythings comes as api/posts/ - redirect it to urls.py of posts/api Application
     path(r'comments/', include("comments.urls"),name="comments"),  #-- Anythings comes as posts/ - redirect it to urls.py of Posts Application
     path(r'login/', login_view, name="login"),
     path(r'logout/', logout_view, name="logout"),
