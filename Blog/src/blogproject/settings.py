@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'pagedown', #--Third Party Library
     'posts',
     'comments',
+    'rest_framework'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
